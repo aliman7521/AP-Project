@@ -6,8 +6,9 @@ import java.awt.event.KeyListener;
 public class KeyManager implements KeyListener{
 
 	public boolean [] keys;
-	public boolean up , down , right , left ;
+	public boolean up , down , right , left , escape;
 	public static boolean space;
+
 	
 	public KeyManager() 
 	{
@@ -22,12 +23,13 @@ public class KeyManager implements KeyListener{
 		right = keys[KeyEvent.VK_D];
 		left = keys[KeyEvent.VK_A];
 		space =keys[KeyEvent.VK_SPACE];
+		escape = keys[KeyEvent.VK_ESCAPE];
 	}
 	
 	@Override
 	public void keyTyped(KeyEvent e) 
 	{
-
+		
 		
 	}
 
@@ -35,12 +37,18 @@ public class KeyManager implements KeyListener{
 	public void keyPressed(KeyEvent e) 
 	{
 		
-		keys[e.getKeyCode()] = true;
-//		System.out.println(e.getKeyChar() + " Pressed!");
+		try {
+			keys[e.getKeyCode()] = true;
+		} catch (Exception e1) 
+		{
+			System.out.println("!!" + e.getKeyCode() + "!!");
+		}
+		
+		System.out.println(e.getKeyChar() + " Pressed!");
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) 
+	public void keyReleased(KeyEvent e)
 	{
 		keys[e.getKeyCode()] = false;
 		

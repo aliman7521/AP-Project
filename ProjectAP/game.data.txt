@@ -1,0 +1,1 @@
+{"User":"amir","gameLevel":100,"weaponLevel":20,"HP":100,"bombs":2,"score":1000,"weapon":"colt"}

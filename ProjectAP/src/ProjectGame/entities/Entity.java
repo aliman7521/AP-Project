@@ -19,26 +19,15 @@ public abstract class Entity
 	public abstract void render(Graphics g);
 	
 	//getter and setter
-	public float getX() 
+	public float getX()
 	{
 		return x;
 	}
-
-	public void setX(float x) 
-	{
-		this.x = x;
-	}
-
-	public float getY() 
+	
+	public float getY()
 	{
 		return y;
 	}
-
-	public void setY(float y) 
-	{
-		this.y = y;
-	}
-
 	
 
 	
