@@ -29,7 +29,8 @@ public class Player extends Creature {
 	}
 
 	@Override
-	public void update() {
+	public void update() 
+	{
 		getInput();
 		move();
 		if((!shooting ||overHeat)&& heat >0)
@@ -66,9 +67,19 @@ public class Player extends Creature {
 
 		else 
 		{
-			x = game.getMouseManager().getX();
-			y = game.getMouseManager().getY();
-			
+			x = game.getMouseManager().getX()-3;
+			y = game.getMouseManager().getY()-20;
+			if (game.getMouseManager().leftClick &&!overHeat)
+			{
+				GameState.shoot();
+				tm.start();
+				heat+=3;
+				shooting = true;
+				if(heat>=200)
+					overHeat = true;
+				
+			}else if(!game.getKeyManager().space)
+				shooting = false;
 		
 		}
 

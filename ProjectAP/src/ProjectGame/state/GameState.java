@@ -33,7 +33,7 @@ public class GameState extends State
 			bullet.update();
 		}
 		if(game.getKeyManager().escape)
-			game.changeState(game.pauseState);
+			game.changeState(3);
 	}
 
 	@Override

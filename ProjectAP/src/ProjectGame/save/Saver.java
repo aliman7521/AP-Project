@@ -2,6 +2,8 @@ package ProjectGame.save;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -11,11 +13,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Saver {
-	private static File f = new File("game.data.txt");
+	private static File f = new File("C:\\Users\\Ali\\eclipse-workspace\\ProjectAP\\resource\\Save.data\\game.data.txt");
 
-	public static void save(Save save) {
+	public static void save(Save save) throws IOException
+	{
 		String st = new Gson().toJson(save);
-//		System.out.println(st);
+		
+		FileWriter fw;
 		PrintWriter pw;
 		try {
 			PrintStream ps = new PrintStream(f);
@@ -24,12 +28,7 @@ public class Saver {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-//		try {
-//			pw = new PrintWriter(f);
-//			pw.print(st);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
+
 
 	}
 

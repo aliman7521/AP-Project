@@ -27,10 +27,10 @@ public class Menu extends State
 	{
 		if(clickedOnNewGame())
 		{
-			game.changeState(game.gameState);
+			game.changeState(2);
 		}
 		if(clickedOnLoadGame())
-			game.changeState(game.gameState);
+			game.changeState(2);
 		
 		if(clickedOnExitGame())
 			System.exit(1);
@@ -62,7 +62,7 @@ public class Menu extends State
 		{
 			if(game.getMouseManager().getY()>y1 - 20 && game.getMouseManager().getY()<y1 + height)
 			{
-				if(game.getMouseManager().clicked)
+				if(game.getMouseManager().leftClick)
 					return true;
 			}
 		}
@@ -75,7 +75,6 @@ public class Menu extends State
 		{
 			if(game.getMouseManager().getY()>y2 - 20 && game.getMouseManager().getY()<y2 + height)
 			{
-				if(game.getMouseManager().clicked)
 					return true;
 			}
 		}
@@ -88,7 +87,7 @@ public class Menu extends State
 		{
 			if(game.getMouseManager().getY()>y3 - 20 && game.getMouseManager().getY()<y3 + height)
 			{
-				if(game.getMouseManager().clicked)
+				if(game.getMouseManager().leftClick)
 					return true;
 			}
 		}

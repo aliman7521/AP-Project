@@ -41,10 +41,10 @@ public class KeyManager implements KeyListener{
 			keys[e.getKeyCode()] = true;
 		} catch (Exception e1) 
 		{
-			System.out.println("!!" + e.getKeyCode() + "!!");
+//			System.out.println("!!" + e.getKeyCode() + "!!");
 		}
 		
-		System.out.println(e.getKeyChar() + " Pressed!");
+//		System.out.println(e.getKeyChar() + " Pressed!");
 	}
 
 	@Override

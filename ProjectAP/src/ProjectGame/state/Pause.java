@@ -14,19 +14,20 @@ public class Pause extends State
 	private int width = 120 , height = 30;
 	private int x1 = x-20 ;
 	
-	public Pause(Game game) {
+	public Pause(Game game) 
+	{
 		super(game);
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
 	public void update() 
 	{
 		if(clickedOnContinue())
-			game.changeState(game.gameState);
+			game.changeState(2);
 		
-		if(clickedOnExitGame())
-			game.changeState(game.pauseState);
+		if(clickedOntoMainMenu())
+			game.changeState(1);
 		
 		if(clickedOnExitGame()) 
 		{
@@ -61,7 +62,7 @@ public class Pause extends State
 		{
 			if(game.getMouseManager().getY()>y1 - 20 && game.getMouseManager().getY()<y1 + height)
 			{
-				if(game.getMouseManager().clicked)
+				if(game.getMouseManager().leftClick)
 					return true;
 			}
 		}
@@ -73,7 +74,7 @@ public class Pause extends State
 		{
 			if(game.getMouseManager().getY()>y2 - 20 && game.getMouseManager().getY()<y2 + height)
 			{
-				if(game.getMouseManager().clicked)
+				if(game.getMouseManager().leftClick)
 					return true;
 			}
 		}

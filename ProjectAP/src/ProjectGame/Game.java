@@ -12,6 +12,7 @@ import ProjectGame.state.GameState;
 import ProjectGame.state.Menu;
 import ProjectGame.state.Pause;
 import ProjectGame.state.State;
+import ProjectGame.state.User;
 
 public class Game implements Runnable {
 
@@ -22,16 +23,19 @@ public class Game implements Runnable {
 
 	private boolean running = false;
 	public Thread thread;
-
-	public State gameState;
-	public State menuState;
-	public State pauseState;
+	
+	private State userState;
+	private State menuState;
+	private State gameState;
+	private State pauseState;
+	
 	private KeyManager keyManager;
 	private MouseManager mouseManager;
 
-	public boolean keyInput = true;
+	public boolean keyInput = false;
 
-	public Game() {
+	public Game() 
+	{
 		keyManager = new KeyManager();
 		mouseManager = new MouseManager();
 	}
@@ -44,9 +48,10 @@ public class Game implements Runnable {
 		display.getCanvas().addMouseListener(mouseManager);
 
 		Assets.init();
-
-		gameState = new GameState(this);
+		
+		userState = new User(this);
 		menuState = new Menu(this);
+		gameState = new GameState(this);
 		pauseState = new Pause(this);
 
 //		State.setState(gameState);
@@ -54,8 +59,12 @@ public class Game implements Runnable {
 //		State.setState(pauseState);
 	}
 
-	private void update() {
+	private void update() 
+	{
+		
 		keyManager.update();
+		mouseManager.update();
+		
 
 		if (State.getState() != null)
 			State.getState().update();
@@ -156,8 +165,23 @@ public class Game implements Runnable {
 		}
 	}
 
-	public void changeState(State state) {
-		State.setState(state);
+	public void changeState(int code) 
+	{
+		switch (code) 
+		{
+		case 0:
+			State.setState(userState);
+			break;
+		case 1:
+			State.setState(menuState);
+			break;
+		case 2:
+			State.setState(gameState);
+			break;
+		case 3:
+			State.setState(pauseState);
+			break;
+		}
 	}
 
 }
