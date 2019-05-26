@@ -1,7 +1,9 @@
 package ProjectGame.state;
 
 import java.awt.Graphics;
-import java.util.LinkedList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.Timer;
 
@@ -10,17 +12,18 @@ import ProjectGame.Bullets.Bullet;
 import ProjectGame.Bullets.PlayerBullet;
 import ProjectGame.entities.Player;
 
-public class GameState extends State 
+public class GameState extends State implements ActionListener
 {
 
 	private static Player player;
-	private static LinkedList<Bullet> bullets = new LinkedList<Bullet>();
-	private static Timer tm = new Timer(2000, null);
+	private static ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private static int time;
+	private final static int delay = 10;
+	
 	public GameState(Game game) 
 	{
 		super(game);
 		player = new Player(game, 500, 380);
-
 	}
 
 	@Override
@@ -34,6 +37,11 @@ public class GameState extends State
 		}
 		if(game.getKeyManager().escape)
 			game.changeState(3);
+		
+		if(time>=0)
+		{
+			time-=1;
+		}
 	}
 
 	@Override
@@ -54,9 +62,21 @@ public class GameState extends State
 
 	}
 
-	public static void shoot() {
-		bullets.add(new PlayerBullet(player.getX()+5,player.getY()));
-		tm.start();
+	public static void shoot() 
+	{
+		if(time <0)
+		{
+			bullets.add(new PlayerBullet(player.getX()+5,player.getY()));
+			time = delay;
+			player.heat +=20;
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

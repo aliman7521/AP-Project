@@ -13,7 +13,8 @@ public class Player extends Creature {
 
 	private Game game;
 	private Timer tm = new Timer(20,null);
-	private int heat;
+	private final int maxheat = 250;
+	public int heat;
 	private int bombs;
 	private boolean overHeat;
 	private boolean shooting;
@@ -36,7 +37,7 @@ public class Player extends Creature {
 		if((!shooting ||overHeat)&& heat >0)
 			heat-=1;
 
-		if(heat <=0)
+		if(heat <=0 && overHeat)
 			overHeat = false;
 	}
 
@@ -58,7 +59,7 @@ public class Player extends Creature {
 				tm.start();
 				heat+=3;
 				shooting = true;
-				if(heat>=200)
+				if(heat>=maxheat)
 					overHeat = true;
 				
 			}else if(!game.getKeyManager().space)
@@ -73,9 +74,8 @@ public class Player extends Creature {
 			{
 				GameState.shoot();
 				tm.start();
-				heat+=3;
 				shooting = true;
-				if(heat>=200)
+				if(heat>=maxheat)
 					overHeat = true;
 				
 			}else if(!game.getKeyManager().space)

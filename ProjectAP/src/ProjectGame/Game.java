@@ -11,6 +11,7 @@ import ProjectGame.input.MouseManager;
 import ProjectGame.state.GameState;
 import ProjectGame.state.Menu;
 import ProjectGame.state.Pause;
+import ProjectGame.state.Settings;
 import ProjectGame.state.State;
 import ProjectGame.state.User;
 
@@ -28,6 +29,8 @@ public class Game implements Runnable {
 	private State menuState;
 	private State gameState;
 	private State pauseState;
+	private State settingState;
+	private int status;
 	
 	private KeyManager keyManager;
 	private MouseManager mouseManager;
@@ -53,10 +56,9 @@ public class Game implements Runnable {
 		menuState = new Menu(this);
 		gameState = new GameState(this);
 		pauseState = new Pause(this);
-
-//		State.setState(gameState);
+		settingState = new Settings(this);
+		
 		State.setState(menuState);
-//		State.setState(pauseState);
 	}
 
 	private void update() 
@@ -68,6 +70,7 @@ public class Game implements Runnable {
 
 		if (State.getState() != null)
 			State.getState().update();
+
 
 	}
 
@@ -139,7 +142,8 @@ public class Game implements Runnable {
 		return mouseManager;
 	}
 
-	public boolean mouseInput() {
+	public boolean mouseInput() 
+	{
 		return true;
 	}
 
@@ -171,16 +175,37 @@ public class Game implements Runnable {
 		{
 		case 0:
 			State.setState(userState);
+			status = code;
+			stateChanged();
 			break;
 		case 1:
 			State.setState(menuState);
+			status = code;
+			stateChanged();
 			break;
 		case 2:
 			State.setState(gameState);
+			status = code;
+			stateChanged();
 			break;
 		case 3:
 			State.setState(pauseState);
+			status = code;
+			stateChanged();
 			break;
+		case 4:
+			State.setState(settingState);
+			status = code;
+			stateChanged();
+			break;
+		}
+	}
+	public void stateChanged()
+	{
+		State.getState().render(g);
+		for(int i = 0 ; i <1000 ; i++)
+		{
+			boolean b = true;
 		}
 	}
 

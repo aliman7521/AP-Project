@@ -74,10 +74,7 @@ public class MouseManager implements MouseMotionListener , MouseListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-//		x = e.getXOnScreen();
-//		y = e.getYOnScreen();		
-//		clicked = false;
-		leftClick = false;
+		 leftClick = false;
 		middleClick = false;
 		RightClick = false;
 	}
@@ -89,7 +86,8 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent e) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

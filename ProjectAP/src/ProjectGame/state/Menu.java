@@ -75,7 +75,9 @@ public class Menu extends State
 		{
 			if(game.getMouseManager().getY()>y2 - 20 && game.getMouseManager().getY()<y2 + height)
 			{
+				if(game.getMouseManager().leftClick)
 					return true;
+			
 			}
 		}
 		return false;

@@ -29,6 +29,9 @@ public class Pause extends State
 		if(clickedOntoMainMenu())
 			game.changeState(1);
 		
+//		if(escapeTyped())
+//			game.changeState(2);
+		
 		if(clickedOnExitGame()) 
 		{
 			
@@ -36,6 +39,14 @@ public class Pause extends State
 	}
 
 	
+
+	private boolean escapeTyped() {
+		if(game.getKeyManager().escape)
+		{
+			return true;
+		}
+		return false;
+	}
 
 	private boolean clickedOnExitGame() {
 		// TODO Auto-generated method stub
