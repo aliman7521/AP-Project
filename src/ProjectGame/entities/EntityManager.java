@@ -4,82 +4,133 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import ProjectGame.Game;
+import ProjectGame.Bullets.Bomb;
+import ProjectGame.Bullets.Bullet;
+import ProjectGame.Bullets.EnemyBullet;
 import ProjectGame.Bullets.PlayerBullet;
+import ProjectGame.Enemy.Enemy;
 
 public class EntityManager 
 {
-	private Game game;
 	private Player player;
-	private ArrayList<Entity> entities = new ArrayList<Entity>();
+	private Game game;
+	private ArrayList<Enemy> enemies;
+	private ArrayList<PlayerBullet>playerBullets;
+	private ArrayList<Bullet> bullets;
+	private Bomb bomb;
+//	private ArrayList<>
+	private int time , delay = 10;
 	
-	private static float playerX , playerY;
-	private static int playerHeat;
-	private static ArrayList<PlayerBullet> bullets;
-	private static int time;
-	private final static int delay = 10;
-	
-	public EntityManager(Game game) 
+	public EntityManager(Game game , Player player) 
 	{
-		this.game = game;
-		player = new Player(this.game, 500, 300);
-//		entities = new ArrayList<Entity>();
-		bullets = new ArrayList<PlayerBullet>();
-		addEntity(player);
+		 this.game = game;
+		 this.player = player;
+		 enemies = new ArrayList<Enemy>();
+		 playerBullets = new ArrayList<PlayerBullet>();
+		 bullets = new ArrayList<Bullet>();
 	}
 	
-	public void update(){
-		for(int i = 0 ; i<entities.size();i++)
+	public void update()
+	{
+		player.update();
+		
+		shootManager();
+		if(player.shoot)
 		{
-			entities.get(i).update();
+			shoot();
+			player.shoot = false;
 		}
-		playerX = player.getX();
-		playerY = player.getY();
-//		System.out.println(playerX);
-		player.heat = playerHeat;
+		if(player.fire)
+		{
+			fire();
+			player.fire = false;
+		}
+		
+		if(bomb!= null)
+		{
+			bomb.update();
+			if(bomb.explode)
+			{
+				enemies.clear();
+				bomb = null;
+			}	
+		}
+		
+		for (int i = 0; i < playerBullets.size(); i++) 
+		{
+			if(playerBullets.get(i).getY()+15<0 || playerBullets.get(i).getX()+7<0) 
+			{
+				playerBullets.remove(i);
+			}else {
+			playerBullets.get(i).update();
+			}
+		}
+		
+		for (int j = 0; j < enemies.size(); j++) 
+		{
+			if(enemies.get(j).getHP()<0) 
+			{
+				enemies.remove(j);
+			}else {
+				enemies.get(j).update();
+			}
+		}
+		
 		if(time>=0)
 		{
 			time-=1;
 		}
 	}
 	
-	public void render(Graphics g){
-		for(int i = 0 ; i<entities.size();i++)
-		{
-			entities.get(i).render(g);
-		}
-//		player.render(g);
+	
+
+	
+
+	public void render(Graphics g)
+	{
+		player.render(g);
+		if(bomb!=null)
+			bomb.render(g);
+		for (Entity entity : enemies) 
+			entity.render(g);
 		
-//		System.out.println("isRendering!");
-		
-		for (int counter = 0; counter<bullets.size() ; counter++) 
-		{
-			if(bullets.get(counter).getY()<0 || bullets.get(counter).getX()<0) 
-			{
-				bullets.remove(counter);
-			}else {
-			bullets.get(counter).render(g);
-			}
-			
-		}
+		for (Bullet bullet : playerBullets) 
+			bullet.render(g);
+
 	}
 	
-	public static void shoot() 
+	private void shootManager() 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	private void shoot() 
 	{
 		if(time <0)
 		{
-			bullets.add(new PlayerBullet(playerX+30,playerY));
+			
+			playerBullets.add(new PlayerBullet(player.getX()+13,player.getY()-10,1));
 			time = delay;
-			playerHeat +=20;
+			player.heat +=playerBullets.get(playerBullets.size()-1).getHeat();
 		}
 	}
 	
-	public void addEntity(Entity e)
+	private void fire()
 	{
-		entities.add(e);
+		if(bomb!=null)
+			return;
+		
+		bomb = new Bomb(player.getX() , player.getY());
+		player.usedBomb();
 	}
 	
-	//GETTERS SETTERS
-
+	
+	//getter setter
+	public void addEnemy(Enemy e)
+	{
+		enemies.add(e);
+	}
+	
 	public Player getPlayer() {
 		return player;
 	}
@@ -88,12 +139,13 @@ public class EntityManager
 		this.player = player;
 	}
 
-	public ArrayList<Entity> getEntities() {
-		return entities;
+	public ArrayList<Enemy> getEnemies() 
+	{
+		return enemies;
 	}
 
-	public void setEntities(ArrayList<Entity> entities) {
-		this.entities = entities;
+	public void setEnemies(ArrayList<Enemy> entities) 
+	{
+		this.enemies = entities;
 	}
-
 }

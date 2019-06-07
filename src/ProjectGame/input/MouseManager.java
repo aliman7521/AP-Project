@@ -15,7 +15,7 @@ public class MouseManager implements MouseMotionListener , MouseListener
 //	public boolean clicked; 
 	public boolean leftClick;
 	public boolean middleClick;
-	public boolean RightClick;
+	public boolean rightClick;
 	private UIManager uimanager;
 	
 	public void update()
@@ -81,7 +81,7 @@ public class MouseManager implements MouseMotionListener , MouseListener
 		}else
 		if(e.getButton() == MouseEvent.BUTTON3)
 		{
-			RightClick = true;
+			rightClick = true;
 		}
 		
 //		System.out.println("Mouse Pressed!");
@@ -91,7 +91,7 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	public void mouseReleased(MouseEvent e) {
 		 leftClick = false;
 		middleClick = false;
-		RightClick = false;
+		rightClick = false;
 	}
 
 	@Override

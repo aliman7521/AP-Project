@@ -13,7 +13,8 @@ public class Save
 		this.User=user;
 	}
 
-	public Save(String user, int weapon ,int gameLevel, int weaponLevel, int hP, int bombs, int score, int life, boolean keyInput) {
+	public Save(String user, int weapon ,int gameLevel, int weaponLevel, int hP, int bombs, int score, int life, boolean keyInput) 
+	{
 		User = user;
 		this.gameLevel = gameLevel;
 		this.weaponLevel = weaponLevel;

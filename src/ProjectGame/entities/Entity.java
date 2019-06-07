@@ -1,11 +1,12 @@
 package ProjectGame.entities;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 public abstract class Entity
 {
 	protected float x , y ;
-	
+	protected Rectangle bounds;
 	
 	public Entity(float x , float y) 
 	{
@@ -29,7 +30,10 @@ public abstract class Entity
 		return y;
 	}
 	
-
+	public Rectangle getBounds() 
+	{
+		return bounds;
+	}
 	
 	
 }

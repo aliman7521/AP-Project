@@ -1,7 +1,9 @@
 package ProjectGame.entities;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
@@ -16,21 +18,27 @@ public class Player extends Creature {
 	private Game game;
 	private final int maxheat = 250;
 	public int heat;
-	private int bombs;
+	
+	public boolean shoot, fire;
 	private boolean overHeat;
 	private boolean shooting;
 	
-
-	public Player(Game game, float x, float y) 
+	private int bombs;
+	private long score = 0;
+	
+	private Color clr = Color.orange;
+//set the level in the constructor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 	public Player(Game game, float x, float y) 
 	{
 		super(x, y);
+		level = 1;
 		this.game = game;
-		level = 0;
-		HP = 100;
-		heat = 0;
-		bombs = 3;
+		HP = 3 ;
+		heat = 0 ;
+		bombs = 3 ;
 		overHeat = false;
 		shooting = false;
+		bounds = new Rectangle((int) x ,(int) y , 60,80);
 	}
 	
 	@Override
@@ -42,7 +50,10 @@ public class Player extends Creature {
 			heat-=1;
 
 		if(heat <=0 && overHeat)
+		{
 			overHeat = false;
+			clr = Color.ORANGE;
+		}
 	}
 
 	public void getInput()
@@ -60,12 +71,29 @@ public class Player extends Creature {
 	@Override
 	public void render(Graphics g) 
 	{
-		g.drawImage(Assets.player[level],(int) x ,(int) y , 60,80, null);
-		g.drawString(Integer.toString(heat), 10, 10);
-		g.drawString("HP : "+ Integer.toString(HP), 1450, 10);
+		g.drawImage(Assets.player[5],(int) x ,(int) y , 60,80, null);
+//		heat gauge
+		g.setColor(Color.white);
+		g.drawRect(20, 800, maxheat, 30);
+		g.setColor(clr);
+		g.fillRect(22, 802, heat, 28);
 		if(overHeat)
-			g.drawString("OVER HEAT !", 30, 10);
-
+		{
+			g.drawString("OVER HEAT !", 50, 850);
+			clr = Color.RED;
+		}
+//		icons
+		g.drawImage(Assets.bomb[0],30,775 , 20 , 20 , null );
+		g.setColor(Color.WHITE);
+		g.drawString(" x " + Integer.toString(bombs), 50, 790);
+		
+		g.drawImage(Assets.heart,80, 775 , 20 , 20,null);
+		g.drawString(" x " + Integer.toString(HP), 110, 790);
+//		score 
+		g.setColor(Color.YELLOW);
+		g.setFont(new Font("Arial" , Font.BOLD , 20));
+		g.drawString(Long.toString(score), 20, 40);
+		
 	}
 	
 	private void keyInput()
@@ -80,7 +108,6 @@ public class Player extends Creature {
 			x += vel;
 		if (game.getKeyManager().space &&!overHeat)
 		{
-			EntityManager.shoot();
 			heat+=3;
 			shooting = true;
 			if(heat>=maxheat)
@@ -96,13 +123,39 @@ public class Player extends Creature {
 		y = game.getMouseManager().getY()-35;
 		if (game.getMouseManager().leftClick &&!overHeat)
 		{
-			GameState.shoot();
+			shoot = true;
 			shooting = true;
 			if(heat>=maxheat)
 				overHeat = true;
 			
 		}else if(!game.getMouseManager().leftClick)
 			shooting = false;
-	
+		
+//here
+		if(game.getMouseManager().rightClick)
+		{
+			if(bombs>0)
+			{	
+				fire = true;
+			}	
+		}
+	}
+	public void usedBomb()
+	{
+		bombs-=1;
+	}
+	public void levelup()
+	{
+		level++;
+	}
+
+	public void resetLevel()
+	{
+		level = 1;
+	}
+
+	public void addScore(int score)
+	{
+		this.score+=score;
 	}
 }

@@ -58,6 +58,11 @@ public abstract class Creature extends Entity
 		return HP;
 	}
 	
+	public int getLevel()
+	{
+		return level;
+	}
+
 
 	
 	

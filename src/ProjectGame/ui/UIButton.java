@@ -11,10 +11,11 @@ public class UIButton extends UIObject{
 	private ClickListener clicker;
 	private String text;
 
-	public UIButton(float x, float y, int width, int height , BufferedImage[] images , ClickListener listener , String st) {
+	public UIButton(float x, float y, int width, int height , BufferedImage[] images , ClickListener listener , String st)
+	{
 		super(x, y, width, height);
 		this.images = images; 
-		listener = clicker;
+		clicker = listener;
 		text = st;
 	}
 
