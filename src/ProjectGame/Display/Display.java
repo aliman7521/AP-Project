@@ -12,7 +12,6 @@ public class Display
 {
 	private JFrame frame ;
 	private Canvas canvas;
-	private JPanel panel;
 	
 	
 	public Display() 
@@ -42,8 +41,4 @@ public class Display
 		return frame;
 	}
 	
-	public JPanel getPanel()
-	{
-		return panel;
-	}
 }

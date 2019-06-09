@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 public class KeyManager implements KeyListener{
 
 	public boolean [] keys;
-	public boolean up , down , right , left , escape;
+	public boolean up , down , right , left , escape , enter;
 	public static boolean space;
 
 	
@@ -24,6 +24,7 @@ public class KeyManager implements KeyListener{
 		left = keys[KeyEvent.VK_A];
 		space =keys[KeyEvent.VK_SPACE];
 		escape = keys[KeyEvent.VK_ESCAPE];
+		enter = keys[KeyEvent.VK_ENTER];
 	}
 	
 	@Override
@@ -56,6 +57,12 @@ public class KeyManager implements KeyListener{
 			
 		}
 		
+	}
+
+
+	public void allFalse() {
+		space = false;
+		escape = false;		
 	}
 	
 

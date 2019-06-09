@@ -1,36 +1,28 @@
-package ProjectGame.state;
+package ProjectGame.Enemy.Groups;
 
 import java.awt.Graphics;
 
 import ProjectGame.Game;
 
-public class Settings extends State
-{
+public class OvalGroup extends Group{
 
-	private Game game;
-	public Settings(Game game) 
-	{
-		super(game);
-	
+	public OvalGroup(int number, float x, float y) {
+		super(number, x, y);
+		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 	@Override
 	public void update() 
 	{
+		
 		
 	}
 
 	@Override
 	public void render(Graphics g) 
 	{
-		
-	}
-
-	@Override
-	public void stateChanged(int status) {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 }

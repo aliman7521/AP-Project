@@ -32,5 +32,11 @@ public abstract class State
 	
 	public abstract void render(Graphics g);
 
+	public abstract void stateChanged(int status);
+
+	public void stateChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

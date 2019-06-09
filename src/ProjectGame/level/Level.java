@@ -14,50 +14,23 @@ import ProjectGame.Enemy.Enemy;
 
 public class Level 
 {
-	private File file;
+	
 	private ArrayList<Enemy> enemies;
+	private Wave[] waves;
 	private int  lvl;
 	
-	public Level(String path) 
+	public Level() 
 	{
-		file = new File(path);
 		enemies = new ArrayList<Enemy>();
+		waves = new Wave[4];
 	}
 	
 
-	public void update()
+	public void setWaves(Wave[] waves)
 	{
-		if(enemies.isEmpty()) 
-		{
-			loadLevel(lvl);
-		}
+		this.waves = waves;
 	}
 	
-	public void render(Graphics g)
-	{
-		
-	}
 	
-	private void loadLevel(int level)
-	{
-		String st = "";
-		Gson gson = new Gson();
-		try {
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			for(int i = 1 ; i < level ; i++)
-			{
-				st = br.readLine();
-			}
-			st = br.readLine();
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 }

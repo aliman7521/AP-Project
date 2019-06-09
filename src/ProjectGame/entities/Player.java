@@ -1,39 +1,44 @@
 package ProjectGame.entities;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
 
 import ProjectGame.Game;
 import ProjectGame.graphics.Assets;
+import ProjectGame.save.Save;
 import ProjectGame.state.GameState;
 import ProjectGame.state.State;
 
-public class Player extends Creature {
+public class Player extends Creature 
+{
 
 	private Game game;
-	private final int maxheat = 250;
+	private int maxheat = 240 , time =5;
 	public int heat;
 	
-	public boolean shoot, fire;
-	private boolean overHeat;
-	private boolean shooting;
+	public boolean shoot, fire , fading = false;
+	private boolean overHeat , shooting ;
 	
-	private int bombs;
+	private int bombs ,bulletType = 1, fadingTime = 300 ;
 	private long score = 0;
 	
 	private Color clr = Color.orange;
+	
 //set the level in the constructor!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
  	public Player(Game game, float x, float y) 
 	{
 		super(x, y);
 		level = 1;
 		this.game = game;
-		HP = 3 ;
+		HP = 5 ;
 		heat = 0 ;
 		bombs = 3 ;
 		overHeat = false;
@@ -46,13 +51,33 @@ public class Player extends Creature {
 	{
 		getInput();
 		move();
-		if((!shooting ||overHeat)&& heat >0)
+		if(overHeat&& heat >0)
 			heat-=1;
+		else if(!shooting && heat >0)
+		{
+			if(time>0)
+				time--;
+			else 
+			{
+				heat--;
+				time = 5;
+			}
+				
+			
+		}
 
 		if(heat <=0 && overHeat)
 		{
 			overHeat = false;
 			clr = Color.ORANGE;
+		}
+		
+		if(fading)
+		{
+			if(fadingTime>0)
+				fadingTime--;
+			else
+				fading = false;
 		}
 	}
 
@@ -93,6 +118,7 @@ public class Player extends Creature {
 		g.setColor(Color.YELLOW);
 		g.setFont(new Font("Arial" , Font.BOLD , 20));
 		g.drawString(Long.toString(score), 20, 40);
+//		and
 		
 	}
 	
@@ -108,7 +134,6 @@ public class Player extends Creature {
 			x += vel;
 		if (game.getKeyManager().space &&!overHeat)
 		{
-			heat+=3;
 			shooting = true;
 			if(heat>=maxheat)
 				overHeat = true;
@@ -128,7 +153,8 @@ public class Player extends Creature {
 			if(heat>=maxheat)
 				overHeat = true;
 			
-		}else if(!game.getMouseManager().leftClick)
+		}
+		else if(!game.getMouseManager().leftClick)
 			shooting = false;
 		
 //here
@@ -140,13 +166,48 @@ public class Player extends Creature {
 			}	
 		}
 	}
+	
+	public void crash() 
+	{
+		if(fading)
+			return;
+		HP-=1;
+		fading = true;
+		try {
+			Robot r = new Robot();
+			r.mouseMove(850, 750);
+			} catch (AWTException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	public void setSave(Save save)
+	{
+		HP = save.HP;
+		bombs =save.bombs;
+		bulletType = save.weapon;
+		level = save.weaponLevel;
+		score = save.score;
+		
+	}
+	
+	
+	public void addBomb()
+	{
+		bombs+=1;
+	}
+	
 	public void usedBomb()
 	{
 		bombs-=1;
 	}
+	
+	
 	public void levelup()
 	{
-		level++;
+		if(level<4)
+			level++;
 	}
 
 	public void resetLevel()
@@ -154,8 +215,28 @@ public class Player extends Creature {
 		level = 1;
 	}
 
+	public void weaponChanged(int type)
+	{
+		if(bulletType == type)
+			levelup();
+		else
+		{
+			bulletType = type;
+			resetLevel();
+		}
+	}
 	public void addScore(int score)
 	{
 		this.score+=score;
+	}
+
+	public int getWeaponType()
+	{
+		return bulletType;
+	}
+	
+	public void cooldown()
+	{
+		maxheat+=30;
 	}
 }

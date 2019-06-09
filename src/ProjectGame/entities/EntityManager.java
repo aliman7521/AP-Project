@@ -2,13 +2,20 @@ package ProjectGame.entities;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Random;
 
 import ProjectGame.Game;
-import ProjectGame.Bullets.Bomb;
-import ProjectGame.Bullets.Bullet;
-import ProjectGame.Bullets.EnemyBullet;
-import ProjectGame.Bullets.PlayerBullet;
 import ProjectGame.Enemy.Enemy;
+import ProjectGame.entities.Bullets.Bomb;
+import ProjectGame.entities.Bullets.Bullet;
+import ProjectGame.entities.Bullets.EnemyBullet;
+import ProjectGame.entities.Bullets.PlayerBullet;
+import ProjectGame.entities.Bullets.Shooter;
+import ProjectGame.entities.icon.Coin;
+import ProjectGame.entities.icon.Cooldown;
+import ProjectGame.entities.icon.LevelUp;
+import ProjectGame.entities.icon.PowerUp;
+import ProjectGame.entities.icon.Weapon;
 
 public class EntityManager 
 {
@@ -16,10 +23,11 @@ public class EntityManager
 	private Game game;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<PlayerBullet>playerBullets;
-	private ArrayList<Bullet> bullets;
+	private ArrayList<EnemyBullet> bullets;
+	private ArrayList<PowerUp> powerUps;
+	private Shooter shooter;
 	private Bomb bomb;
-//	private ArrayList<>
-	private int time , delay = 10;
+	private int time , delay = 12 ;//, bugSaver = 10;
 	
 	public EntityManager(Game game , Player player) 
 	{
@@ -27,7 +35,9 @@ public class EntityManager
 		 this.player = player;
 		 enemies = new ArrayList<Enemy>();
 		 playerBullets = new ArrayList<PlayerBullet>();
-		 bullets = new ArrayList<Bullet>();
+		 bullets = new ArrayList<EnemyBullet>();
+		 powerUps = new ArrayList<PowerUp>();
+		 shooter = new Shooter();
 	}
 	
 	public void update()
@@ -35,16 +45,7 @@ public class EntityManager
 		player.update();
 		
 		shootManager();
-		if(player.shoot)
-		{
-			shoot();
-			player.shoot = false;
-		}
-		if(player.fire)
-		{
-			fire();
-			player.fire = false;
-		}
+		
 		
 		if(bomb!= null)
 		{
@@ -55,31 +56,53 @@ public class EntityManager
 				bomb = null;
 			}	
 		}
-		
+//		bullet checking
 		for (int i = 0; i < playerBullets.size(); i++) 
 		{
+			boolean isRemoved = false;
 			if(playerBullets.get(i).getY()+15<0 || playerBullets.get(i).getX()+7<0) 
 			{
 				playerBullets.remove(i);
+				isRemoved = true;
 			}else {
 			playerBullets.get(i).update();
 			}
+			
+			bulletCheck(isRemoved, i);
+			
 		}
-		
-		for (int j = 0; j < enemies.size(); j++) 
+//		enemy checking
+		for (int i = 0 ; i< enemies.size();i++) 
 		{
-			if(enemies.get(j).getHP()<0) 
+			Enemy enemy = enemies.get(i);
+			enemy.update();
+			if(enemy.fired())
+				bullets.add(new EnemyBullet(enemy.getX() , enemy.getY(), enemy.getLevel()));
+			
+			if(enemy.bounds.contains(player.bounds))
 			{
-				enemies.remove(j);
-			}else {
-				enemies.get(j).update();
+				player.crash();
+				enemies.remove(i);
 			}
 		}
+		
+		for(int i = 0 ; i<bullets.size();i++)
+		{
+			EnemyBullet bullet = bullets.get(i);
+			if(player.bounds.contains(bullet.bounds))
+			{
+				bullets.remove(i);
+				player.crash();
+			}
+		}
+		
+		
 		
 		if(time>=0)
 		{
 			time-=1;
 		}
+		
 	}
 	
 	
@@ -97,23 +120,79 @@ public class EntityManager
 		for (Bullet bullet : playerBullets) 
 			bullet.render(g);
 
+		for (PowerUp powerUp : powerUps) 
+			powerUp.render(g);
+		
+		for (Enemy enemy : enemies) 
+			enemy.render(g);
+		
 	}
 	
 	private void shootManager() 
 	{
-		// TODO Auto-generated method stub
-		
-	}
-	private void shoot() 
-	{
-		if(time <0)
+		if(player.shoot && time<0)
 		{
-			
-			playerBullets.add(new PlayerBullet(player.getX()+13,player.getY()-10,1));
-			time = delay;
-			player.heat +=playerBullets.get(playerBullets.size()-1).getHeat();
+			System.out.println("Success");
+//			if(bugSaver ==60)
+//			{
+				System.out.println("Created");
+				shooter.shoot(player.getX()+13,player.getY(),player.getWeaponType(), player.getLevel());
+				playerBullets = shooter.getBullet(playerBullets);
+				time = delay;
+				player.shoot = false;
+				game.getMouseManager().leftClick = false;
+				player.heat +=playerBullets.get(playerBullets.size()-1).getHeat();
+//			}else if (bugSaver >0)
+//				bugSaver-=1;
+//			else 
+//				bugSaver = 60;
+		}
+		if(player.fire)
+		{
+			fire();
+			player.fire = false;
 		}
 	}
+	
+	private void bulletCheck(boolean isRemoved ,int i)
+	{
+		if(isRemoved)
+			return;
+		for (int j = 0; j < enemies.size(); j++) 
+		{
+			
+			if(enemyHit(i,j))
+			{
+				Enemy enemy = enemies.get(j);
+				enemy.getDamage(playerBullets.get(i).getDamage());
+				playerBullets.remove(i);
+				if(enemy.getHP()<0) 
+				{
+					enemies.remove(j);
+					if(Math.random()<0.06)
+						powerUps.add(new Coin(enemy.getX(), enemy.getY()));
+					if(Math.random()<0.03)
+						powerUps.add(new Cooldown(enemy.getX(), enemy.getY()));
+					if(Math.random()<0.03)
+						powerUps.add(new LevelUp(enemy.getX(), enemy.getY()));
+					if(Math.random()<0.03)
+						powerUps.add(new Weapon(enemy.getX(), enemy.getY()));
+				}
+				
+				return;
+			}
+		}
+		for(int j =0 ; j<powerUps.size();j++)
+		{
+			if(playerBullets.get(i).bounds.contains(powerUps.get(j).bounds))
+			{
+				playerBullets.remove(i);
+				powerUps.remove(j);
+				return;
+			}
+		}
+	}
+	
 	
 	private void fire()
 	{
@@ -123,7 +202,17 @@ public class EntityManager
 		bomb = new Bomb(player.getX() , player.getY());
 		player.usedBomb();
 	}
+	//conditions
 	
+	private boolean enemyHit(int i , int j)
+	{
+		if(enemies.get(j).bounds.contains(playerBullets.get(i).bounds))
+			return true;
+		
+		else
+			return false;
+		
+	}
 	
 	//getter setter
 	public void addEnemy(Enemy e)
@@ -144,8 +233,8 @@ public class EntityManager
 		return enemies;
 	}
 
-	public void setEnemies(ArrayList<Enemy> entities) 
+	public void setEnemies(ArrayList<Enemy> enemies) 
 	{
-		this.enemies = entities;
+		this.enemies = enemies;
 	}
 }

@@ -22,30 +22,36 @@ import com.google.gson.reflect.TypeToken;
 public class Saver {
 	private static File f = new File("C:\\Users\\Ali\\eclipse-workspace\\ProjectAP\\resource\\Save.data\\game.data.txt");
 	
-	public static void save(Save save) throws IOException
+	public static void save(Save save) 
 	{
-		ArrayList<String> users = new ArrayList<String>();
-		FileReader fr = new FileReader(f);
-		BufferedReader bufferedReader = new BufferedReader(fr);
-		String line , json = null;
-		Gson gson = new Gson();
+		try {
+			ArrayList<String> users = new ArrayList<String>();
+			FileReader fr = new FileReader(f);
+			BufferedReader bufferedReader = new BufferedReader(fr);
+			String line , json = null;
+			Gson gson = new Gson();
+			
+			while ((line = bufferedReader.readLine()) != null) 
+			{
+				json = line;
+				Save testSave = gson.fromJson(json, Save.class);
+			    if(!testSave.User.equals(save.User))
+			    {
+			    	users.add(json);
+			    }
+			}
+			
+			String st = new Gson().toJson(save);
+			
+			PrintStream ps = new PrintStream(f);
+			ps.println(st);
+			for(int i = 0 ; i < users.size();i++)
+				ps.println(users.get(i));
 		
-		while ((line = bufferedReader.readLine()) != null) 
-		{
-			json = line;
-			Save testSave = gson.fromJson(json, Save.class);
-		    if(!testSave.User.equals(save.User))
-		    {
-		    	users.add(json);
-		    }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		String st = new Gson().toJson(save);
-		
-		PrintStream ps = new PrintStream(f);
-		ps.println(st);
-		for(int i = 0 ; i < users.size();i++)
-			ps.println(users.get(i));
 		
 		
 

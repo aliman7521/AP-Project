@@ -180,50 +180,41 @@ public class Game implements Runnable {
 		{
 		case 0:
 			State.setState(userState);
-			status = code;
-			stateChanged();
 			break;
 		case 1:
 			State.setState(menuState);
-			status = code;
-			stateChanged();
 			break;
 		case 2:
 			State.setState(gameState);
-			status = code;
-			stateChanged();
 			break;
 		case 3:
 			State.setState(pauseState);
-			status = code;
-			stateChanged();
 			break;
 		case 4:
 			State.setState(settingState);
-			status = code;
-			stateChanged();
 			break;
 		}
+		State.getState().stateChanged(status);
+		status = code;
 	}
-	public void stateChanged()
+	
+//  GETTER SETTER
+	
+	public Display getDisplay()
 	{
-		State.getState().render(g);
-		for(int i = 0 ; i <100000000 ; i++)
-		{
-			boolean b = true;
-			b = false;
-		}
-		
+		return display;
 	}
 	
 	public State getGameState()
 	{
 		return gameState;
 	}
+	
 	public void setSave(Save save)
 	{
 		this.save=save;
 	}
+	
 	public Save getSave()
 	{
 		return save;

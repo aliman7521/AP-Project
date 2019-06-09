@@ -16,7 +16,7 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	public boolean leftClick;
 	public boolean middleClick;
 	public boolean rightClick;
-	private UIManager uimanager;
+	private UIManager uiManager;
 	
 	public void update()
 	{
@@ -25,12 +25,14 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	
 	public void setUIManager (UIManager uimanager)
 	{
-		this.uimanager = uimanager;
+		this.uiManager = uimanager;
 	}
+	
 	public void removeUIManager()
 	{
-		uimanager = null;
+		uiManager = null;
 	}
+	
 	public int getX()
 	{
 		return x;
@@ -53,6 +55,9 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	{
 		x = e.getXOnScreen();
 		y = e.getYOnScreen();
+		
+		if(uiManager != null)
+			uiManager.onMouseMove(e);
 //		leftClick = false;
 //		RightClick = false;
 //		middleClick = false;
@@ -92,6 +97,9 @@ public class MouseManager implements MouseMotionListener , MouseListener
 		 leftClick = false;
 		middleClick = false;
 		rightClick = false;
+		
+		if(uiManager != null)
+			uiManager.onMouseRelease(e);;
 	}
 
 	@Override
@@ -108,6 +116,13 @@ public class MouseManager implements MouseMotionListener , MouseListener
 	}
 
 
+	public void allFalse() {
+		rightClick = false;
+		leftClick = false;
+		middleClick = false;// TODO Auto-generated method stub
+		
+	}
+	
 	
 
 }

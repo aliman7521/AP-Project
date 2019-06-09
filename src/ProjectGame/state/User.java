@@ -12,100 +12,110 @@ import ProjectGame.Game;
 import ProjectGame.graphics.Assets;
 import ProjectGame.save.Save;
 import ProjectGame.save.Saver;
+import ProjectGame.ui.ClickListener;
+import ProjectGame.ui.NewUser;
+import ProjectGame.ui.UIButton;
+import ProjectGame.ui.UIManager;
+import ProjectGame.ui.UIObject;
 
 public class User extends State{
 
-	private ArrayList<String> users = new ArrayList<String>();;
-	private int number , buttonY = 100;
-	private final int buttonX = 600 , gap =75 , width = 350, height = 50;
-	
-	
+	private ArrayList<String> users;
+	private UIManager uiManager;
+	private UIButton createUser , deleteUser;
+	private final int fontSize = 25,  gap =75 , width = 350, height = 50; 
+	private NewUser newUser ;
+	private int x = 600 ,y = 100 ,number ;
+	private boolean deleting = false;
 	public User(Game game) 
 	{
 		super(game);
-		Init();
+		init();
 		
 	}
 
+	private void init() 
+	{
+		
+		users = new ArrayList<String>();
+		uiManager = new UIManager();
+		users = Saver.readUsers();
+		number = users.size();		
+		for (int i = 0 ; i<number ; i++) 
+		{
+			int j = i;
+			uiManager.addObject(new UIButton(x, y+i*gap, width , height,Assets.button, users.get(i) ,fontSize , new ClickListener()
+			{
+				
+				@Override
+				public void onClick()
+				{
+					if(!deleting)
+					{
+						game.setSave(Saver.load(users.get(j)));
+						game.changeState(1);
+					}
+					else
+					{
+						Saver.deleteSave(new Save(users.get(j)));
+						deleting = false;
+						init();
+					}
+				}
+			}));
+		}
+		createUser = new UIButton(1000, 800, 100, 50,Assets.button,"Create User", 25, new ClickListener() {
+			
+			@Override
+			public void onClick() 
+			{
+				newUser = new NewUser(game , users);
+				
+			}
+		});
+		deleteUser = new UIButton(500, 800, 100, 50,Assets.button,"Delete User", 25, new ClickListener() {
+			
+			@Override
+			public void onClick() 
+			{
+				boolean deleting = true;
+				
+			}
+		});
+		uiManager.addObject(createUser);
+		uiManager.addObject(deleteUser);
+		game.getMouseManager().setUIManager(uiManager);
+	}
 
 	@Override
 	public void update() 
 	{
+		uiManager.update();
 		
-		
-		if(clickedOnCreateUser())
-			newUser();
-		
-		if(clickedOnUser()) 
-		{
-			
-		}
-			
-		
-		buttonY = 100;
 	}
-
 
 	@Override
 	public void render(Graphics g) 
 	{
-		g.drawImage(Assets.userBackground , 0 , 0 , 2000 , 1000,null);
-		g.setColor(Color.WHITE);
-		g.setFont(new Font("Arial" , Font.BOLD , 30));
-		for (int i = 0; i < users.size(); i++) 
+			g.drawImage(Assets.userBackground,0,0,2000,1000,null);
+			uiManager.render(g);
+				
+	}
+
+	@Override
+	public void stateChanged(int status) 
+	{
+		game.getMouseManager().setUIManager(uiManager);
+		game.getMouseManager().allFalse();
+		ArrayList<UIObject> objects = uiManager.getObjects();
+		for (UIObject uiObject : objects)
 		{
-			g.drawImage(Assets.button, buttonX, buttonY, width, height, null);
-			g.drawString(users.get(i) , buttonX+25,buttonY+30);
-			buttonY+=gap;
+			uiObject.setHovering(false);
+			newUser = null;
 		}
-		
-		
-		
-		
+		uiManager = null;
+		init();
 	}
-
-	public void Init() 
-	{
-		users = Saver.readUsers();
-		number = users.size();
-	}
-	
-	private void newUser() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	private boolean clickedOnCreateUser() {
-		
-		return false;
-	}
-	
-	private boolean clickedOnUser() 
-	{
-		if(game.getMouseManager().leftClick && mouseOnButton(game.getMouseManager().getX() , game.getMouseManager().getY()))
-		{
-			int y= game.getMouseManager().getY()-100;
-			System.out.println(y/125);
-			game.setSave(Saver.load(users.get(y/125)));
-			game.changeState(1);
-
-			return true;
-		}
-		return false;
-	}
-
-
-	private boolean mouseOnButton(int mouseX, int mouseY) 
-	{
-		if(mouseX>= 600 && mouseX <=950)
-			if(mouseY>=100 && mouseY <= 1075)
-			return true;
-		
-		return false;
-	}
-
-	
 
 	
 }

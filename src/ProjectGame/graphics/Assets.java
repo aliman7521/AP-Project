@@ -6,8 +6,8 @@ import java.awt.image.BufferedImage;
 
 public class Assets 
 {
-	public static BufferedImage userBackground , menuBackground , gameBackground;
-	public static BufferedImage button , button2 , bomb2 , heart;
+	public static BufferedImage userBackground , menuBackground , gameBackground, heart , bomb2 ,coin ,button2;
+	public static BufferedImage [] button   ;
 	public static BufferedImage [] player = new BufferedImage[6];
 	public static BufferedImage [] enemy = new BufferedImage[4];
 	public static BufferedImage [] enemyBullet  , playerBullet ,bomb;
@@ -18,15 +18,17 @@ public class Assets
 	public static void init() 
 	{
 		SpriteSheet creatures = new SpriteSheet(ImageLoader.loadImage("/images/svg_spaceships.png"));
-		SpriteSheet gui = new SpriteSheet(ImageLoader.loadImage("/images/GUI/CavernCobble.png"));
-		
+		SpriteSheet gui = new SpriteSheet(ImageLoader.loadImage("/images/GUI/SplatterGray.png"));
+		SpriteSheet gui2 = new SpriteSheet(ImageLoader.loadImage("/images/GUI/IcyChill.png"));
 		backgroundInit();
 		entityInit(creatures);
 		bulletInit();
-		heart = ImageLoader.loadImage("/images/heart.png");
-		button = gui.crop(370, 2160 , 2246, 475);
-	
-		
+		heart = ImageLoader.loadImage("/images/Icon/heart.png");
+		coin = ImageLoader.loadImage("/images/Icon/coin-icon-3830.png");
+		button = new BufferedImage[2];
+		button[0] = gui.crop(370, 2160 , 2246, 475);
+		button[1] = gui2.crop(370, 2160 , 2246, 475);
+		button2 =  gui.crop(370, 2160 , 2246, 475);
 	}
 	
 	private static void backgroundInit() 

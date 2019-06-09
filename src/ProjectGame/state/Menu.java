@@ -1,145 +1,122 @@
 package ProjectGame.state;
 
 import java.awt.AWTException;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Robot;
-
-import javax.swing.text.GapContent;
+import java.util.ArrayList;
 
 import ProjectGame.Game;
 import ProjectGame.graphics.Assets;
 import ProjectGame.save.Save;
+import ProjectGame.save.Saver;
+import ProjectGame.ui.ClickListener;
+import ProjectGame.ui.UIButton;
 import ProjectGame.ui.UIManager;
+import ProjectGame.ui.UIObject;
 
 public class Menu extends State
 {
-	private int stringX = 715, stringY = 250;
-	private int stringX2 =30 , y0 = 770;
-	private final int gap = 200 , y2 = stringY + gap ,y3 = y2 + gap;
-	private UIManager uimanager;
-	
-	private int width = 170 , height = 30;
-	
-	private int x1 = stringX-20 ;
-	
+	private UIButton newGame,loadGame,exitGame, back;
+	private UIManager uiManager;
+	private final int fontSize = 30, gap = 200, width = 300 , height = 50 ;
+	private int x = 700, y = 100  ;
 	public Menu(Game game) 
 	{
 		super(game);
-		game.getMouseManager();
-	}
-	
-	@Override
-	public void update() 
-	{
-		if(clickedOnNewGame())
-		{
-			game.changeState(2);
-		}
-		if(clickedOnLoadGame())
-			game.changeState(2);
+		uiManager = new UIManager();
+		init();
+		uiManager.addObject(newGame);
+		uiManager.addObject(loadGame);
+		uiManager.addObject(exitGame);
+		uiManager.addObject(back);
 		
-		if(clickedOnExitGame())
-			System.exit(1);
-		
-//		if(clickedOnBack()) 
-//		{
-//			game.changeState(0);
-//		}
 	}
 
-	
-
-	@Override
-	public void render(Graphics g) 
-	{
-		g.drawImage(Assets.userBackground,0,0,null);
-		
-		g.setFont(new Font("Arial" , Font.BOLD , 30));
-		g.setColor(Color.WHITE);
-		
-		g.drawString("New Game", stringX, stringY);
-		
-		
-		g.drawString("Load Game",stringX, y2);
-		
-		g.drawString("Exit Game", stringX, y3);
-		
-		g.drawString("Back", stringX2, y0);
-		
-		
-	}
-	
-	private void delete()
-	{
-		
-	}
-	
-	private boolean clickedOnNewGame()
-	{
-		if(game.getMouseManager().getX()>x1 && game.getMouseManager().getX()<x1+width)
+	private void init() {
+		newGame = new UIButton(x, y, width, height,Assets.button, "New Game" , fontSize ,new ClickListener() 
 		{
-			if(game.getMouseManager().getY()>stringY - 20 && game.getMouseManager().getY()<stringY + height)
+			
+			@Override
+			public void onClick() 
 			{
-				if(game.getMouseManager().leftClick) 
-				{
-//					Save newGame = new Save(game.getSave().User);
-//					game.setSave(newGame);
-					try {
-						Robot r = new Robot();
-						r.mouseMove(750, 800);
+				String save = game.getSave().User;
+				Saver.deleteSave(game.getSave());
+				Saver.save(new Save(save));
+				try {
+					Robot r = new Robot();
+					r.mouseMove(850, 750);
 					} catch (AWTException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-					return true;
-				}
+				game.changeState(2);
+				
 			}
-		}
-		return false;
-	}
-	
-	private boolean clickedOnLoadGame()
-	{
-		if(game.getMouseManager().getX()>x1 && game.getMouseManager().getX()<x1+width)
+		});		
+		loadGame = new UIButton(x, y+gap, width, height,Assets.button, "Load Game", fontSize , new ClickListener() 
 		{
-			if(game.getMouseManager().getY()>y2 - 20 && game.getMouseManager().getY()<y2 + height)
+			
+			@Override
+			public void onClick() 
 			{
-				if(game.getMouseManager().leftClick)
-				{	
-					return true;
-				}
+				try {
+					Robot r = new Robot();
+					r.mouseMove(850, 750);
+					} catch (AWTException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				game.changeState(2);
 			}
+		});	
+		
+		exitGame = new UIButton(x, y + 2*gap, width, height,Assets.button, "Exit Game" , fontSize, new ClickListener() 
+		{
+			
+			@Override
+			public void onClick() 
+			{
+				System.exit(1);
+				
+			}
+		});		
+		
+		back = new UIButton(30, 800, 150, 50,Assets.button, "Back" , 20, new ClickListener() 
+		{
+			
+			@Override
+			public void onClick() 
+			{
+				game.changeState(0);
+			}
+		});		
+	}
+
+	@Override
+	public void update() 
+	{
+		uiManager.update();
+	}
+
+	@Override
+	public void render(Graphics g) 
+	{
+		g.drawImage(Assets.userBackground, 0 , 0 ,2000 , 1000,null);
+		uiManager.render(g);
+		newGame.render(g);
+	}
+
+	@Override
+	public void stateChanged(int status) {
+		game.getMouseManager().setUIManager(uiManager);
+		game.getMouseManager().allFalse();
+		ArrayList<UIObject> objects = uiManager.getObjects();
+		for (UIObject uiObject : objects)
+		{
+			uiObject.setHovering(false);
 		}
-		return false;
-	}
-	
-	private boolean clickedOnExitGame() 
-	{
-		if(game.getMouseManager().getX()>x1 && game.getMouseManager().getX()<x1+width)
-			{
-				if(game.getMouseManager().getY()>y3 - 20 && game.getMouseManager().getY()<y3 + height)
-				{
-					if(game.getMouseManager().leftClick)
-						return true;
-				}
-			}
-			return false;
-	}
-	
-	boolean clickedOnBack()
-	{
-		if(game.getMouseManager().getX()>stringX2 && game.getMouseManager().getX()<stringX2+width)
-			{
-				if(game.getMouseManager().getY()>y3 - 20 && game.getMouseManager().getY()<y3 + height)
-				{
-					if(game.getMouseManager().leftClick)
-						return true;
-				}
-			}
-			return false;
 		
 	}
+	
+	
 }

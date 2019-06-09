@@ -1,14 +1,9 @@
 package ProjectGame.state;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 
 import ProjectGame.Game;
-import ProjectGame.Bullets.Bullet;
-import ProjectGame.Bullets.PlayerBullet;
-import ProjectGame.entities.Creature;
-import ProjectGame.entities.Entity;
 import ProjectGame.entities.EntityManager;
 import ProjectGame.entities.Player;
 import ProjectGame.graphics.Assets;
@@ -48,6 +43,17 @@ public class GameState extends State
 	public EntityManager getEntityManager()
 	{
 		return entityManager;
+	}
+
+	@Override
+	public void stateChanged(int status) 
+	{
+		game.getMouseManager().setUIManager(null);
+		game.getMouseManager().allFalse();	
+		if(status !=3)
+		{
+			entityManager.getPlayer().setSave(game.getSave());
+		}
 	}
 
 	
